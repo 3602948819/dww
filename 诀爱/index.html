@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>天天开心</title>
+    <style>
+        .popup {
+            position: absolute;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            /* 手机常见比例 16:9 */
+        }
+        /* 遮罩层样式 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .overlay p {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+            padding: 20px 40px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- 音频元素 -->
+<audio id="bgMusic" loop>
+    <source src="1.mp3.mp4" type="audio/mpeg">
+    您的浏览器不支持音频播放
+</audio>
+
+<!-- 初始遮罩层 -->
+<div class="overlay" id="overlay">
+    <p>你的好朋友邓旺旺祝你 ✨</p>
+</div>
+
+<script>
+    const bgMusic = document.getElementById('bgMusic');
+    const overlay = document.getElementById('overlay');
+    let hasStarted = false;
+
+    // 点击遮罩层触发音乐播放和弹窗动画
+    overlay.addEventListener('click', startExperience);
+
+    function startExperience() {
+        if (hasStarted) return;
+        hasStarted = true;
+
+        // 隐藏遮罩
+        overlay.style.opacity = "0";
+        overlay.style.transition = "opacity 0.5s ease";
+        setTimeout(() => overlay.remove(), 500);
+
+        // 播放音乐
+        bgMusic.play().catch(e => console.log('音乐播放触发:', e));
+
+        // 开始创建弹窗
+        createPopups();
+    }
+
+    // 弹窗逻辑
+    function createPopups() {
+        const messages = [
+            "多喝水哦～", "保持微笑呀", "每天都要元气满满", "记得吃水果",
+            "保持好心情", "好好爱自己", "我想你了", "梦想成真",
+            "期待下一次见面", "金榜题名", "顺顺利利", "早点休息",
+            "愿所有烦恼都消失", "别熬夜", "今天过得开心呀", "天冷了，多穿衣服"
+        ];
+        const popupCount = 300;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        // 手机屏幕比例 16:9 (宽:高)
+        const aspectRatio = 16 / 9;
+
+        for (let i = 0; i < popupCount; i++) {
+            setTimeout(() => {
+                const popup = document.createElement("div");
+                popup.className = "popup";
+                popup.textContent = messages[Math.floor(Math.random() * messages.length)];
+
+                // 随机宽度 (80-160px)
+                const width = 80 + Math.random() * 80;
+                // 根据16:9比例计算高度
+                const height = width / aspectRatio;
+
+                // 样式调整
+                popup.style.fontSize = (14 + Math.random() * 6) + "px";
+                popup.style.backgroundColor = `rgb(245, ${245 + Math.random() * 10}, 255)`;
+                popup.style.color = `rgb(${60 + Math.random() * 195}, ${60 + Math.random() * 195}, ${60 + Math.random() * 195})`;
+                popup.style.width = width + "px";
+                popup.style.height = height + "px";
+
+                // 随机位置 (确保弹窗完全显示在屏幕内)
+                popup.style.left = (Math.random() * (screenWidth - width)) + "px";
+                popup.style.top = (Math.random() * (screenHeight - height)) + "px";
+
+                // 添加一些随机旋转角度增加真实感
+                popup.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+
+                // 出现动画
+                popup.style.opacity = "0";
+                popup.style.transition = "opacity 0.3s ease";
+                document.body.appendChild(popup);
+                setTimeout(() => popup.style.opacity = "1", 10);
+
+                // 添加消失动画
+                setTimeout(() => {
+                    popup.style.opacity = "0";
+                    setTimeout(() => popup.remove(), 300);
+                }, 3000 + Math.random() * 2000);
+
+            }, i * 15);
+        }
+    }
+</script>
+</body>
+</html>
